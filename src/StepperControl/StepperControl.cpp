@@ -1,21 +1,51 @@
 #include <Arduino.h>
 #include "AccelStepper.h"
 
-int maxSpeed = 6400; //about 2 rps
-int motorSpeed = 3200;
+int maxSpeed = 9600; //about 2 rps
+int motorSpeed = 9600;
 int motorAccel = 160000; //steps / second / second to accelerate
 
-int motor1DirPin = 2;
-int motor1StepPin = 3;
+int motor1DirPin = 4;
+int motor1StepPin = 5;
+
+long lastpress = millis();
+int debounceTime = 1000;
 
 AccelStepper stepper1(1,motor1StepPin, motor1DirPin);
 
-int buttonPin = 7;
-int buttonState = -1;
+int upButtonPin = 21;
+int upButtonState = -1;
 
-void changeGoal(){
-	stepper1.moveTo(32000*buttonState);
-	buttonState = buttonState*-1;
+int downButtonPin = 20;
+int downButtonState = -1;
+
+int stepperGoal;
+
+void moveUp(){
+	//software debouncing
+	if (millis()-lastpress > debounceTime)
+	{
+	lastpress = millis();
+	stepperGoal = 32000;
+	stepper1.moveTo(stepperGoal);
+	stepper1.setSpeed(motorSpeed);
+	Serial.println("moveup");
+	}
+}
+
+void moveDown(){
+	if (millis()-lastpress > debounceTime)
+	{
+	lastpress = millis();
+	stepperGoal = -32000;
+	stepper1.moveTo(stepperGoal);
+	stepper1.setSpeed(motorSpeed);
+	Serial.println("movedown");
+	}
+}
+
+void moveSTOP(){
+	stepper1.setSpeed(0);
 }
 
 void setup() {
@@ -29,22 +59,35 @@ void setup() {
 
 	stepper1.moveTo(32000);
 
-	pinMode(buttonPin, INPUT);
+	pinMode(upButtonPin, OUTPUT);
+	pinMode(downButtonPin, OUTPUT);
 
-	attachInterrupt(0,changeGoal,CHANGE);
+	attachInterrupt(2,moveUp,RISING);
+
+	attachInterrupt(3,moveDown,RISING);
+
+
+	Serial.println("startup");
 }
 
 void loop() {
-	buttonState = digitalRead(buttonPin);
+	
+	//these must be called as often as possible to ensure smooth operation
+	//any delay will cause jerky motion
+	stepper1.run();
+}
 
-	if (buttonState == HIGH) {     
-		// turn LED on:    
-		stepper1.moveTo(32000);  
-	  } 
-	  else {
-		// turn LED off:
-		stepper1.moveTo(-32000);
-	  }
+
+//	buttonState = digitalRead(buttonPin);
+
+//	if (buttonState == HIGH) {     
+//		// turn LED on:    
+//		stepper1.moveTo(32000);  
+//	  } 
+//	  else {
+//		// turn LED off:
+//		stepper1.moveTo(-32000);
+//	  }
 	//Serial.println(stepper1.distanceToGo());
 	//if stepper1 is at desired location
 //	if (stepper1.distanceToGo() == 0){
@@ -53,10 +96,6 @@ void loop() {
 //	//so if current position is 400 steps out, go position -400
 //		stepper1.moveTo(-stepper1.currentPosition()); 
 //	}
-	//these must be called as often as possible to ensure smooth operation
-	//any delay will cause jerky motion
-	stepper1.run();
-}
 
 
 
