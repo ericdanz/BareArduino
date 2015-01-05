@@ -38,7 +38,7 @@ void loop() {
 		if(PRINT_SERIAL)
 			Serial.println("UP");
 	}  
-	stepper1.runToPosition();
+	stepper1.run();
 	//Serial.println(stepper1.currentPosition());
 }
 
