@@ -30,6 +30,8 @@ void moveSTOP(){
 	if (millis() - lastPress > debounceTime)
 	{
 		lastPress = millis();
+		stepper1.move(-500);
+		stepper1.runToPosition();
 		stepper1.stop();
 		stepper1.setCurrentPosition(0);
 		if(PRINT_SERIAL)
