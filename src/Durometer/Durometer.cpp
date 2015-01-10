@@ -2,46 +2,53 @@
 #include "Durometer.h"
 
 void setup() {
-	Serial.begin(115200);
+  Serial.begin(115200);
 
-	stepper1.setMaxSpeed(maxSpeed);
+  stepper1.setMaxSpeed(maxSpeed);
 
-	stepper1.setSpeed(motorSpeed);
+  stepper1.setSpeed(motorSpeed);
 
-	stepper1.setAcceleration(motorAccel);
+  stepper1.setAcceleration(motorAccel);
 
-	//Set the initial movement up until the E Stop
-	stepper1.moveTo(goalPos*-2);
+  //Set the initial movement up until the E Stop
+  stepper1.moveTo(4000);
+  stepper1.runToPosition();
+  stepper1.moveTo(goalPos*-2);
 	
-	pinMode(upButtonPin, INPUT);
-	pinMode(DownButtonPin, INPUT);
-	pinMode(eStopPin, INPUT);
+  pinMode(upButtonPin, INPUT);
+  pinMode(DownButtonPin, INPUT);
+  pinMode(eStopPin, INPUT);
 
-	attachInterrupt(0,moveSTOP,RISING);
+  attachInterrupt(0,moveSTOP,RISING);
 
-	Serial.println("Started");
+  Serial.println("Started");
 }
 
 void loop() {
+  //poll buttons
 	
-	if (digitalRead(DownButtonPin) == HIGH && (millis() - lastPress > debounceTime))
+  if (digitalRead(DownButtonPin) == HIGH && (millis() - lastPress > debounceTime))
+    {
+      lastPress = millis();
+      stepper1.moveTo(goalPos);
+      if(PRINT_SERIAL)
 	{
-		lastPress = millis();
-		stepper1.moveTo(goalPos);
-		if(PRINT_SERIAL)
-			Serial.println("DOWN");
+	  Serial.print("Goal: ");
+	  Serial.print(goalPos);
+	  Serial.println(" DOWN");
 	}
-	if (digitalRead(upButtonPin) == HIGH && (millis() - lastPress > debounceTime))
-	{
-		lastPress = millis();
-		stepper1.moveTo(0);
-		if(PRINT_SERIAL)
-			Serial.println("UP");
-	}  
-	stepper1.run();
-	//Serial.println(stepper1.currentPosition());
-}
+    }
+  if (digitalRead(upButtonPin) == HIGH && (millis() - lastPress > debounceTime))
+    {
+      lastPress = millis();
+      stepper1.moveTo(0);
+      if(PRINT_SERIAL)
+	Serial.println("UP");
+    }  
 
+  stepper1.run();
+}
+ 
 
 
 
