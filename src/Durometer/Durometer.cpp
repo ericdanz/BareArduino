@@ -17,9 +17,12 @@ void setup() {
 	
   pinMode(upButtonPin, INPUT);
   pinMode(DownButtonPin, INPUT);
-  pinMode(eStopPin, INPUT);
+  pinMode(eStopPinTop, INPUT);
+  pinMode(eStopPinBottom, INPUT);
 
-  attachInterrupt(0,moveSTOP,RISING);
+  attachInterrupt(0,moveStopTop,RISING);
+  attachInterrupt(1,moveStopBottom,RISING);
+  
 
   Serial.println("Started");
 }

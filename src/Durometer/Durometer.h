@@ -9,7 +9,8 @@ int m1DirPin = 6;
 int m1StepPin = 5;
 int upButtonPin = 10;
 int DownButtonPin = 11;
-int eStopPin = 2;
+int eStopPinTop = 2;
+int eStopPinBottom = 3;
 
 //Debug (change to stop printing to the serial port)
 #define PRINT_SERIAL 0
@@ -26,7 +27,7 @@ long lastPress = millis();
 
 AccelStepper stepper1(1,m1StepPin, m1DirPin);
 
-void moveSTOP(){
+void moveStopTop(){
   if (millis() - lastPress > debounceTime)
     {
       lastPress = millis();
@@ -34,8 +35,20 @@ void moveSTOP(){
       stepper1.setCurrentPosition(-2000);
       stepper1.moveTo(0);
       if(PRINT_SERIAL)
-	Serial.println("E STOP");
+	Serial.println("E STOP TOP");
     }
 }
+
+void moveStopBottom(){
+  if (millis() - lastPress > debounceTime)
+    {
+      lastPress = millis();
+      stepper1.stop();
+      stepper1.move(2000);
+      if(PRINT_SERIAL)
+	Serial.println("E STOP BOTTOM");
+    }
+}
+
 
 #endif
