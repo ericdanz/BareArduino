@@ -13,7 +13,7 @@ int eStopPinTop = 2;
 int eStopPinBottom = 3;
 
 //Debug (change to stop printing to the serial port)
-#define PRINT_SERIAL 0
+#define PRINT_SERIAL 1
 
 //Constants relating to movement
 int maxSpeed = 1600;
@@ -21,7 +21,7 @@ int motorSpeed = 1600;
 int motorAccel = 10000;
 int revolutions = 10;
 int stepsPerR = 3200;
-int debounceTime = 500;
+int debounceTime = 300;
 long goalPos = revolutions*stepsPerR*5;
 long lastPress = millis();
 
