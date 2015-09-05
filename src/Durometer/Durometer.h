@@ -4,16 +4,19 @@
 #include <Arduino.h>
 #include "AccelStepper.h"
 
+#define MCU atmega32u4
+
 //Pins
-int m1DirPin = 6;
+int m1DirPin = 4;f
 int m1StepPin = 5;
-int upButtonPin = 10;
-int DownButtonPin = 11;
-int eStopPinTop = 2;
-int eStopPinBottom = 3;
+//int upButtonPin = 10;
+//int DownButtonPin = 11;
+int eStopPinTop = 3;
+int eStopPinBottom = 2;
+int ledPin = 13;
 
 //Debug (change to stop printing to the serial port)
-#define PRINT_SERIAL 1
+#define PRINT_SERIAL 0
 
 //Constants relating to movement
 int maxSpeed = 1600;
